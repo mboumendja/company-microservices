@@ -1,8 +1,8 @@
 package com.company.auth_service.entity;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,6 +19,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,14 +36,23 @@ public class EmployeeCredential implements UserDetails{
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
+    private String firstName;
+
+    @NotBlank
+    private String lastName;
+
     @Column(unique = true)
     @Email
+    @NotBlank
     private String email;
 
     @JsonIgnore
+    @NotBlank
     private String password;
 
     @Builder.Default
+    @NotBlank
     private Role role = Role.INTERN;
 
     @Builder.Default
