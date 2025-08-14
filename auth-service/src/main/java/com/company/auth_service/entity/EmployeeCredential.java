@@ -20,6 +20,7 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -52,28 +53,34 @@ public class EmployeeCredential implements UserDetails{
     private String password;
 
     @Builder.Default
-    @NotBlank
+    @NotNull
     private Role role = Role.INTERN;
 
     @Builder.Default
+    @NotNull
     private Boolean enabled = true;
 
     @Builder.Default
     @Column(name = "account_non_expired")
+    @NotNull
     private Boolean accountNonExpired = true;
     
     @Builder.Default
     @Column(name = "account_non_locked")
+    @NotNull
     private Boolean accountNonLocked = true;
     
     @Builder.Default
     @Column(name = "credentials_non_expired")
+    @NotNull
     private Boolean credentialsNonExpired = true;
     
     @Column(name = "created_at")
+    @NotNull
     private LocalDateTime createdAt;
     
     @Column(name = "updated_at")
+    @NotNull
     private LocalDateTime updatedAt;
 
     @PrePersist

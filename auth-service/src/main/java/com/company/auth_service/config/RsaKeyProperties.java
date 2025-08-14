@@ -5,10 +5,10 @@ import java.security.interfaces.RSAPublicKey;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
-@ConfigurationProperties(prefix = "wt.rsa")
+@Data
+@ConfigurationProperties(prefix = "jwt.rsa")
 public class RsaKeyProperties {
     private RSAPublicKey publicKey;
     private RSAPrivateKey privateKey;
