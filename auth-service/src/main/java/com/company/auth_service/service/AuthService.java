@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +16,7 @@ import com.company.auth_service.dto.LoginRequest;
 import com.company.auth_service.dto.LoginResponse;
 import com.company.auth_service.dto.RegisterRequest;
 import com.company.auth_service.dto.RegisterResponse;
+import com.company.auth_service.encryption.AESEncryption;
 import com.company.auth_service.entity.EmployeeCredential;
 import com.company.auth_service.entity.Role;
 import com.company.auth_service.jwt.JwtService;
@@ -41,13 +41,15 @@ public class AuthService {
         EmployeeCredential credential = (EmployeeCredential) authentication.getPrincipal();
 
         String accessToken = jwtService.generateToken(credential);
+
+        String encryptedToken = AESEncryption.encrypt(accessToken);
         
         return LoginResponse.builder()
                     .firstName(credential.getFirstName())
                     .lastName(credential.getLastName())
                     .email(credential.getEmail())
                     .tokenType("Bearer")
-                    .accessToken(accessToken)
+                    .accessToken(encryptedToken)
                     .expiresIn(3600L)
                     .build();
     }

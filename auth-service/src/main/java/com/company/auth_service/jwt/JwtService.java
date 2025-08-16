@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.company.auth_service.config.RsaKeyProperties;
-
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
@@ -25,7 +24,7 @@ public class JwtService {
     private final RsaKeyProperties rsaKeyProperties;
     private final JwtConfig jwtConfig;
 
-     public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails) {
         try {
             Date now = new Date();
             Date expiryDate = new Date(now.getTime() + jwtConfig.getExpiration());

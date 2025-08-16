@@ -11,6 +11,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.company.auth_service.encryption.AESEncryption;
 import com.company.auth_service.service.CustomUserDetailsService;
 
 import jakarta.servlet.FilterChain;
@@ -41,14 +42,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        final String jwt = authHeader.substring(7);
-        final String username = jwtService.extractUsername(jwt);
+        final String encodedJwt = authHeader.substring(7);
+        String decodedJwt = AESEncryption.decrypt(encodedJwt);
+        final String username = jwtService.extractUsername(decodedJwt);
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             // we whould consider encrupt the email and decrypt it here
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             
-            if (jwtService.isTokenValid(jwt, userDetails)) {
+            if (jwtService.isTokenValid(decodedJwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,
