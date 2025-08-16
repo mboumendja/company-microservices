@@ -1,0 +1,12 @@
+server:
+  port: ${GATEWAY-PORT}
+spring:
+  application:
+    name: API-GATEWAY-SERVICE
+  cloud:
+    gateway:
+      routes:
+        - id: AUTH-SERVICE
+          uri: http://localhost:${AUTH-SERVICE-PORT}
+          predicates:
+            - Path=/api/auth/**
