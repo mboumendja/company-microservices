@@ -1,10 +1,12 @@
 server:
-  port: ${GATEWAY-PORT}
+  port: ${GATEWAY_PORT}
 spring:
-  application:
-    name: API-GATEWAY-SERVICE
   cloud:
     gateway:
+      discovery:
+        locator:
+          enabled: true
+          lowerCaseServiceId: true
       routes:
         - id: AUTH-SERVICE
           uri: http://localhost:${AUTH-SERVICE-PORT}
