@@ -43,11 +43,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         final String encodedJwt = authHeader.substring(7);
+
         String decodedJwt = AESEncryption.decrypt(encodedJwt);
         final String username = jwtService.extractUsername(decodedJwt);
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            // we whould consider encrupt the email and decrypt it here
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             
             if (jwtService.isTokenValid(decodedJwt, userDetails)) {

@@ -1,9 +1,12 @@
 package com.company.auth_service.jwt;
 
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class JwtService {
     private final RsaKeyProperties rsaKeyProperties;
     private final JwtConfig jwtConfig;
+    private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
 
     public String generateToken(UserDetails userDetails) {
         try {
@@ -34,7 +38,6 @@ public class JwtService {
                     .collect(Collectors.joining(","));
             
             JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-                // we should consider encrupt the emial here before sending it
                     .subject(userDetails.getUsername())
                     .issuer(jwtConfig.getIssuer())
                     .issueTime(now)
@@ -97,6 +100,15 @@ public class JwtService {
             return expirationTime.before(new Date());
         } catch (ParseException e) {
             return true;
+        }
+    }
+
+    public Date getExpirationTime(String token) {
+        try {
+            SignedJWT signedJWT = SignedJWT.parse(token);
+            return signedJWT.getJWTClaimsSet().getExpirationTime();
+        } catch (Exception e) {
+            return null;
         }
     }
 

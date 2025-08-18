@@ -2,7 +2,6 @@ package com.company.auth_service.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,11 +31,6 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(@Validated @RequestBody RegisterRequest request) {
         return authService.register(request);
-    }
-
-    @GetMapping("/me")
-    public String me() {
-        return "this is a protected route";
     }
     
 }
