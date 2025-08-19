@@ -43,14 +43,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         final String encodedJwt = authHeader.substring(7);
-
-        String decodedJwt = AESEncryption.decrypt(encodedJwt);
+        final String decodedJwt = AESEncryption.decrypt(encodedJwt);
+        
         final String username = jwtService.extractUsername(decodedJwt);
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             
-            if (jwtService.isTokenValid(decodedJwt, userDetails)) {
+            if (jwtService.isTokenValid(decodedJwt, userDetails) && !jwtService.isTokenBlackListed(decodedJwt) ) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,

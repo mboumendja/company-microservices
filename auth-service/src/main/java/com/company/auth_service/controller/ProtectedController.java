@@ -1,6 +1,6 @@
 package com.company.auth_service.controller;
 
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -8,8 +8,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProtectedController {
     
     @GetMapping("/me")
-    //@PreAuthorize("hasRole('EMPLOYEE')")
-    public String me() {
-        return "this is a protected route";
+    public String me(Authentication authentication) {
+        if(authentication != null) {
+            return "user email : " + authentication.getName();
+        } else {
+            return "error";
+        }
     }
 }

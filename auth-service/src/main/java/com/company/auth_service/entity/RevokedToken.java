@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -28,15 +29,17 @@ public class RevokedToken {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
+    @Lob
     private String token;
 
-    @Column(name = "revoked_at")
+    @Column(name = "revoked_at", updatable=false)
+    @Builder.Default()
     private Instant revokedAt = Instant.now();
 
     @Column(name = "expires_at")
-     private Instant expiresAt;
+    private Instant expiresAt;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable=false)
     @NotNull
     private LocalDateTime createdAt;
     

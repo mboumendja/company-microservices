@@ -26,6 +26,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.company.auth_service.encryption.AESEncryption;
+import com.company.auth_service.entity.RevokedToken;
 import com.company.auth_service.jwt.JwtAuthenticationFilter;
 import com.company.auth_service.jwt.JwtService;
 import com.company.auth_service.repository.RevokedTokenRepository;
@@ -107,33 +109,24 @@ public class SecurityConfig {
         return (request, response, authentication) -> {
             final String authHeader = request.getHeader("Authorization");
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                final String jwt = authHeader.substring(7);
+                final String encodedJwt = authHeader.substring(7);
+                final String decodedJwt = AESEncryption.decrypt(encodedJwt);
                 try {
                     // Option 1: Add token to blacklist/revocation list
-                    Instant expiration = jwtService.getExpirationTime(jwt);
-                    revokedTokenRepository.save(new RevokedToken(jwt, expiration));
-                    SecurityContextHolder.clearContext();
+                    Instant expiration = jwtService.getExpirationTime(decodedJwt);
+                    RevokedToken revokedToke = RevokedToken.builder()   
+                            .token(decodedJwt)
+                            .expiresAt(expiration)
+                            .build();
+                    revokedTokenRepository.save(revokedToke);
                     
                     // Option 2: Store token with expiration in Redis/cache
                     // redisTemplate.opsForValue().set("blacklist:" + jwt, "revoked", 
                     //     Duration.ofSeconds(jwtService.getExpirationTime(jwt)));
                     
-                    // Option 3: Database-based token revocation
-                    // revokedTokenRepository.save(new RevokedToken(jwt, Instant.now()));
-                    
-                    // Clear the security context
-                    SecurityContextHolder.clearContext();
-                    
-                    // Optional: Log the logout event
-                    logger.info("User logged out successfully with token: {}", 
-                        jwt.substring(0, Math.min(jwt.length(), 10)) + "...");
-                    
                 } catch (Exception e) {
-                    logger.error("Error during logout process", e);
-                    // Still clear context even if blacklisting fails
-                    SecurityContextHolder.clearContext();
-                }// Here you could add token to blacklist if needed
-                    SecurityContextHolder.clearContext();
+                    throw new Error("LOGOUT_FAILED");
+                }
             }
         };
     }

@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.company.auth_service.config.RsaKeyProperties;
+import com.company.auth_service.repository.RevokedTokenRepository;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
@@ -26,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class JwtService {
     private final RsaKeyProperties rsaKeyProperties;
     private final JwtConfig jwtConfig;
+    private final RevokedTokenRepository revokedTokenRepository;
     private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
 
     public String generateToken(UserDetails userDetails) {
@@ -103,19 +105,27 @@ public class JwtService {
         }
     }
 
-    public Date getExpirationTime(String token) {
-        try {
-            SignedJWT signedJWT = SignedJWT.parse(token);
-            return signedJWT.getJWTClaimsSet().getExpirationTime();
-        } catch (Exception e) {
-            return null;
+    /**
+     * Extract expiration time (exp claim) from a JWT.
+     *
+     * @param token the raw JWT string
+     * @return Instant expiration time
+     * @throws ParseException if JWT cannot be parsed
+     */
+    public Instant getExpirationTime(String token) throws ParseException {
+        SignedJWT signedJWT = SignedJWT.parse(token);
+        Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+
+        if (expirationTime == null) {
+            throw new IllegalArgumentException("JWT does not contain an expiration claim");
         }
+
+        return expirationTime.toInstant();
     }
 
     public boolean isTokenBlackListed(String token) {
         try {
-            // the body to check if the token is blacklisted
-            return false;
+            return revokedTokenRepository.existsByToken(token);
         } catch (Exception e) {
             return true;
         }

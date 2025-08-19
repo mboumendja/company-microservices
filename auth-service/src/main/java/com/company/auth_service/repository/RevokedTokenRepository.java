@@ -7,5 +7,5 @@ import com.company.auth_service.entity.RevokedToken;
 
 @Repository
 public interface RevokedTokenRepository extends JpaRepository<RevokedToken, Long> {
-    boolean exiexistsByToken(String token);
+    boolean existsByToken(String token);
 }
