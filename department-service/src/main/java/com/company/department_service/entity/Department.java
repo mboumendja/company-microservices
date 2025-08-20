@@ -10,8 +10,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,16 +25,14 @@ public class Department {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
-
-    @NotBlank
+    
     @Column(nullable=false)
     private String name;
 
     @Column(nullable=false)
     private Long managerId;
 
-    @Column(name = "created_at", updatable=false)
-    @NotNull
+    @Column(name = "created_at", updatable=true, nullable=false)
     private LocalDateTime createdAt;
     
     @Column(name = "updated_at", nullable=false)
