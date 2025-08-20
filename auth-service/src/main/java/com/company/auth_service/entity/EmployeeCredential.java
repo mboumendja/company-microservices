@@ -56,6 +56,9 @@ public class EmployeeCredential implements UserDetails{
     @NotNull
     private Role role = Role.INTERN;
 
+    @Column(nullable = false)
+    private Long employeeId;
+
     @Builder.Default
     @NotNull
     private Boolean enabled = true;

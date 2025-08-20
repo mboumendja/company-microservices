@@ -23,6 +23,9 @@ public class RegisterRequest {
     @NotNull(message = "Role is required")
     @NotBlank
     private String role;
+
+    @NotBlank(message="Field required")
+    private Long employeeId;
     
     @NotBlank(message = "Password is required")
     @Size(min = 6, message = "Password must be at least 6 characters")

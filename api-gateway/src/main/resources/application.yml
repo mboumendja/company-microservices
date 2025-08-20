@@ -12,3 +12,11 @@ spring:
           uri: http://localhost:${AUTH-SERVICE-PORT}
           predicates:
             - Path=/api/auth/**
+        - id: DEPARTMENT-SERVICE
+          uri: http://localhost:${DEPARTMENT-SERVICE-PORT}
+          predicates:
+            - Path=/api/departments/**
+        - id: EMPLOYEE-SERVICE
+          uri: http://localhost:${EMPLOYEE-SERVICE-PORT}
+          predicates:
+            - Path=/api/employees/**

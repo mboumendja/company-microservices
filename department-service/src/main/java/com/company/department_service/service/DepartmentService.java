@@ -26,7 +26,6 @@ public class DepartmentService {
 
             Department department = Department.builder()
                     .name(departmentRequest.getName())
-                    .managerId(Long.parseLong(departmentRequest.getManagerId()))
                     .build();
             
             departmentRepository.save(department);

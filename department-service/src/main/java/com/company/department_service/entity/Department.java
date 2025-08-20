@@ -29,9 +29,6 @@ public class Department {
     @Column(nullable=false)
     private String name;
 
-    @Column(nullable=false)
-    private Long managerId;
-
     @Column(name = "created_at", updatable=true, nullable=false)
     private LocalDateTime createdAt;
     

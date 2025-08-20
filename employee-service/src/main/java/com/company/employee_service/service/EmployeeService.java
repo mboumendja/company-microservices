@@ -7,7 +7,10 @@ import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.company.employee_service.client.DepartmentClient;
+import com.company.employee_service.dto.DepartmentResponse;
 import com.company.employee_service.dto.EmployeeRequest;
+import com.company.employee_service.dto.EmployeeResponse;
 import com.company.employee_service.entity.Employee;
 import com.company.employee_service.entity.Role;
 import com.company.employee_service.repository.EmployeeRepository;
@@ -19,13 +22,21 @@ import lombok.RequiredArgsConstructor;
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final DepartmentClient departmentClient;
 
     public ResponseEntity<List<Employee>> getllEmployees() {
         return ResponseEntity.ok().body(employeeRepository.findAll());
     }
 
-    public ResponseEntity<Optional<Employee>> getEmployee(Long id) {
-        return ResponseEntity.ok(employeeRepository.findById(id));
+    public ResponseEntity<EmployeeResponse> getEmployee(Long id) {
+
+        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RuntimeException("Employee not found"));
+
+        DepartmentResponse dept = departmentClient.getDepartmentById(employee.getDepartmentId());
+
+        EmployeeResponse employeeResponse = new EmployeeResponse(employee, dept);
+           
+        return ResponseEntity.ok(employeeResponse);
     }
 
     public ResponseEntity<?> createEmployee (EmployeeRequest employeeRequest) {
@@ -47,7 +58,7 @@ public class EmployeeService {
                     .lastName(employeeRequest.getLastName())
                     .email(employeeRequest.getEmail())
                     .role(assignedRole)
-                    .departmentId(Long.valueOf(employeeRequest.getDepartmentId()))
+                    .departmentId(employeeRequest.getDepartmentId())
                     .build();
         
         employeeRepository.save(employee);

@@ -10,7 +10,4 @@ public class DepartmentRequest {
 
     @NotBlank(message="Department name is required")
     private String name;
-
-    @NotBlank(message="Department manager is required")
-    private String managerId;
 }

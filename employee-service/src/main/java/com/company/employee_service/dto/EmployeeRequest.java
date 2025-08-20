@@ -25,5 +25,5 @@ public class EmployeeRequest {
     private String role;
 
     @NotBlank(message="Department Id required")
-    private String departmentId;
+    private Long departmentId;
 }

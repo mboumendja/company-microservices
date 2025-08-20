@@ -26,7 +26,7 @@ public class DepartmentController {
     private final DepartmentService departmentService;
 
     @PostMapping
-    public ResponseEntity<String> postMethodName(@Validated @RequestBody DepartmentRequest departmentRequest) {        
+    public ResponseEntity<String> createDepartment(@Validated @RequestBody DepartmentRequest departmentRequest) {        
         return departmentService.createDepartment(departmentRequest);
     }
 
@@ -36,7 +36,7 @@ public class DepartmentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Department>> getMethodName(@PathVariable Long id) {
+    public ResponseEntity<Optional<Department>> getDepartmentById(@PathVariable Long id) {
         return departmentService.getOneDepartment(id);
     }
 }
